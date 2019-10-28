@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="202200a9-26a9-4aa7-9954-90bee0139108" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/activity_student/StudentHomeActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/activity_student/StudentRoutineActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/adapter_student/StudentHomeTaskAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model/Lesson.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model/ResponseNotificationToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model/Section.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model/Standard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model/Subject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model_student/ResponseStudentHomeTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model_student/StudentHomeTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/myclassnotes/app/model_teacher/ResponseTeacherHomeTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_student_home.xml" afterDir="f
