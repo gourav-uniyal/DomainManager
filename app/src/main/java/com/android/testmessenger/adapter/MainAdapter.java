@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.testmessenger.Domain;
 import com.android.testmessenger.R;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -22,10 +24,10 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<String> arrayList;
+    private ArrayList<Domain> arrayList;
     private static final String TAG = "MainAdapter";
 
-    public MainAdapter(Context context, ArrayList<String> arrayList) {
+    public MainAdapter(Context context, ArrayList<Domain> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -38,10 +40,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.lblPhoneNumber.setText( arrayList.get( position ) );
-        holder.imgCall.setOnClickListener( v -> startCall( arrayList.get( position ) ) );
-        holder.imgMessaging.setOnClickListener( v -> sendTextMessage( arrayList.get( position ) ) );
-        holder.imgWhatsapp.setOnClickListener( v -> sendWhatsAppMessage( arrayList.get( position ) ) );
+        holder.lblCity.setText( arrayList.get( position ).getCity() );
+        holder.lblCompanyName.setText( arrayList.get( position ).getCompanyName() );
+        holder.lblDomainName.setText( arrayList.get( position ).getDomainName() );
+        holder.lblName.setText( arrayList.get( position ).getName() );
+        holder.lblPhoneNumber.setText( arrayList.get( position ).getNumber() );
+        holder.imgCall.setOnClickListener( v -> startCall( arrayList.get( position ).getNumber() ) );
+        holder.imgMessaging.setOnClickListener( v -> sendTextMessage( arrayList.get( position ).getNumber() ) );
+        holder.imgWhatsapp.setOnClickListener( v -> sendWhatsAppMessage( arrayList.get( position ).getNumber() ) );
     }
 
     @Override
@@ -51,6 +57,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView( R.id.lbl_city ) TextView lblCity;
+        @BindView( R.id.lbl_company_name ) TextView lblCompanyName;
+        @BindView( R.id.lbl_domain_name ) TextView lblDomainName;
+        @BindView( R.id.lbl_name ) TextView lblName;
         @BindView(R.id.lbl_phone_number) TextView lblPhoneNumber;
         @BindView(R.id.imageView_call) ImageView imgCall;
         @BindView(R.id.imageView_text_message) ImageView imgMessaging;
