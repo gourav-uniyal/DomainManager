@@ -40,7 +40,7 @@ public class VerificationActivity extends AppCompatActivity {
 
         if(!isEmptyField) {
             Toast.makeText( this, "Verification Completed", Toast.LENGTH_SHORT ).show( );
-            Intent intent = new Intent( getApplicationContext( ), MainActivity.class );
+            Intent intent = new Intent( getApplicationContext( ), HomeActivity.class );
             startActivity( intent );
             finish( );
         }

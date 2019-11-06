@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">DomainMessenger</string>
+    <string name="app_name">DomainManager</string>
+    <string name="action_exports">Export to Excel</string>
 </resources>

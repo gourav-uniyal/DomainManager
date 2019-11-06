@@ -44,10 +44,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.lblCompanyName.setText( arrayList.get( position ).getCompanyName() );
         holder.lblDomainName.setText( arrayList.get( position ).getDomainName() );
         holder.lblName.setText( arrayList.get( position ).getName() );
-        holder.lblPhoneNumber.setText( arrayList.get( position ).getNumber() );
-        holder.imgCall.setOnClickListener( v -> startCall( arrayList.get( position ).getNumber() ) );
-        holder.imgMessaging.setOnClickListener( v -> sendTextMessage( arrayList.get( position ).getNumber() ) );
-        holder.imgWhatsapp.setOnClickListener( v -> sendWhatsAppMessage( arrayList.get( position ).getNumber() ) );
+        holder.lblPhoneNumber.setText( arrayList.get( position ).getPhoneNumber() );
+        holder.imgCall.setOnClickListener( v -> startCall( arrayList.get( position ).getPhoneNumber() ) );
+        holder.imgMessaging.setOnClickListener( v -> sendTextMessage( arrayList.get( position ).getPhoneNumber() ) );
+        holder.imgWhatsapp.setOnClickListener( v -> sendWhatsAppMessage( arrayList.get( position ).getPhoneNumber() ) );
     }
 
     @Override

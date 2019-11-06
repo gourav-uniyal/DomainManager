@@ -6,17 +6,17 @@ public class Domain {
     private String domainName;
     private String city;
     private String companyName;
-    private String number;
-    private String whatsapp;
+    private String phoneNumber;
+    private String whatsappMessage;
     private String message;
 
-    public Domain(String name, String domainName, String city, String companyName, String number, String whatsapp, String message) {
+    public Domain(String name, String domainName, String city, String companyName, String phoneNumber, String whatsappMessage, String message) {
         this.name = name;
         this.domainName = domainName;
         this.city = city;
         this.companyName = companyName;
-        this.number = number;
-        this.whatsapp = whatsapp;
+        this.phoneNumber = phoneNumber;
+        this.whatsappMessage = whatsappMessage;
         this.message = message;
     }
 
@@ -52,20 +52,20 @@ public class Domain {
         this.companyName = companyName;
     }
 
-    public String getNumber() {
-        return number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getWhatsapp() {
-        return whatsapp;
+    public String getWhatsappMessage() {
+        return whatsappMessage;
     }
 
-    public void setWhatsapp(String whatsapp) {
-        this.whatsapp = whatsapp;
+    public void setWhatsappMessage(String whatsappMessage) {
+        this.whatsappMessage = whatsappMessage;
     }
 
     public String getMessage() {
