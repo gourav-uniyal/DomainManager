@@ -21,13 +21,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<Domain> arrayList;
-    private static final String TAG = "MainAdapter";
+    private static final String TAG = "HomeAdapter";
 
-    public MainAdapter(Context context, ArrayList<Domain> arrayList) {
+    public HomeAdapter(Context context, ArrayList<Domain> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }

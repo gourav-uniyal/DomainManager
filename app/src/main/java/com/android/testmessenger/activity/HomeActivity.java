@@ -14,7 +14,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.android.testmessenger.Domain;
 import com.android.testmessenger.R;
-import com.android.testmessenger.adapter.MainAdapter;
+import com.android.testmessenger.adapter.HomeAdapter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @BindView( R.id.rv_main ) RecyclerView recyclerView;
 
-    private MainAdapter mainAdapter;
+    private HomeAdapter homeAdapter;
     private ArrayList<Domain> arrayList;
     private static long back_pressed;
     private static String folderPath;
@@ -50,9 +51,9 @@ public class HomeActivity extends AppCompatActivity {
         arrayList.add( domain );
         arrayList.add( domain );
 
-        mainAdapter = new MainAdapter(getApplicationContext(), arrayList);
+        homeAdapter = new HomeAdapter(getApplicationContext(), arrayList);
         recyclerView.setLayoutManager( new LinearLayoutManager(this, RecyclerView.VERTICAL, false) );
-        recyclerView.setAdapter( mainAdapter );
+        recyclerView.setAdapter( homeAdapter );
     }
 
     /**
