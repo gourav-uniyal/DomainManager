@@ -34,7 +34,6 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<Domain> arrayList;
     private static long back_pressed;
     private static String folderPath;
-    private WritableWorkbook workbook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +60,15 @@ public class HomeActivity extends AppCompatActivity {
      */
     void createExcelFile(){
 
-        File file = new File(folderPath, "file.xls");
+        File file = new File(folderPath, "06-11-19" + getRandomString( 4 ) +".xls");
         WorkbookSettings wbSettings = new WorkbookSettings();
         wbSettings.setLocale(new Locale("en", "EN"));
         try {
-            workbook = Workbook.createWorkbook(file, wbSettings);
-            createExcelSheet();
+            WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
+            createExcelSheet(workbook);
             workbook.write();
             workbook.close();
+            Toast.makeText( this, "Exported", Toast.LENGTH_SHORT ).show( );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,9 +77,9 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * this function creates excel sheet.
      */
-    void createExcelSheet(){
-        try {
+    void createExcelSheet(WritableWorkbook workbook){
 
+        try {
             WritableSheet sheet = workbook.createSheet("sheet1", 0);
 
             sheet.addCell( new Label( 0, 0, "Name" ) );
