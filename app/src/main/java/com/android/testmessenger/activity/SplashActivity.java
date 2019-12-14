@@ -66,6 +66,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseVerification> call, Response<ResponseVerification> response) {
                 ResponseVerification responseVerification = response.body( );
+                Log.d( TAG, "onResponse: "+ response.body() );
                 if(responseVerification != null) {
                     Log.v( TAG, responseVerification.getStatus( ) );
                     if (responseVerification.getStatus( ).equals( "success" )) {

@@ -93,6 +93,11 @@ public class HomeActivity extends AppCompatActivity {
 
     void init() {
         filter = getIntent( ).getStringExtra( "filter" );
+
+        yearArrayList = new ArrayList<>();
+        monthArrayList = new ArrayList<>();
+        dateArrayList = new ArrayList<>();
+        countryArrayList = new ArrayList<>();
   /*      stateArrayList = new ArrayList<>( );
         stateArrayList.add( "all" );
         cityArrayList = new ArrayList<>( );
@@ -136,14 +141,10 @@ public class HomeActivity extends AppCompatActivity {
                 DomainFilter domainFilter = response.body( );
                 if (domainFilter != null) {
                     if (domainFilter.getStatus( ).equals( "success" )) {
-                        HashSet<String> yearHashSet = new HashSet<>( domainFilter.getYearArray( ));
-                        yearArrayList = new ArrayList<>(yearHashSet);
-                        HashSet monthHashSet = new HashSet<>( domainFilter.getMonthArray( ));
-                        monthArrayList = new ArrayList<>(monthHashSet);
-                        HashSet dateHashSet = new HashSet<>( domainFilter.getDateArray());
-                        dateArrayList = new ArrayList<>(dateHashSet);
-                        HashSet countryHashSet = new HashSet<>( domainFilter.getCountryArray( ));
-                        countryArrayList = new ArrayList<>(countryHashSet);
+                        yearArrayList.addAll( new ArrayList<String>( new HashSet<String>( domainFilter.getYearArray() ) ));
+                        monthArrayList.addAll( domainFilter.getMonthArray());
+                        dateArrayList.addAll( new ArrayList<String>( new HashSet<String>( domainFilter.getDateArray() ) ));
+                        countryArrayList.addAll( domainFilter.getCountryArray() );
                         /*stateArrayList.addAll( domainFilter.getStateArray( ) );
                         cityArrayList.addAll( domainFilter.getCityArray( ) );*/
                         setSpinner( );
@@ -171,7 +172,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     void setSpinnerYear() {
-
         yearArrayList.remove( null );
         spinnerYear.setItems(yearArrayList);
 
@@ -182,6 +182,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     void setSpinnerMonth() {
+
         for (String month : monthArrayList) {
             spinnerMonth.setItems( monthHashMap.get( month ) );
         }

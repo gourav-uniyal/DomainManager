@@ -126,6 +126,7 @@ public class VerificationActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ResponseVerification> call, @NonNull Response<ResponseVerification> response) {
                 Log.d( TAG, "sendVerification: " + "api called" );
                 ResponseVerification responseVerification = response.body();
+                Log.d( TAG, "onResponse: "+ response.body() );
                 if(responseVerification!=null) {
                     if (responseVerification.getStatus( ).equals( "success" )) {
                         if (verificationDao.getVerificaion( 1 ) == null) {

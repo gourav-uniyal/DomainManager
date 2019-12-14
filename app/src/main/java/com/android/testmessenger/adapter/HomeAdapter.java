@@ -142,10 +142,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private synchronized void getMessage(){
         VerificationDao verificationDao = AppDatabase.getInstance( context ).verificationDao();
-        Verification verification = verificationDao.getVerificaion( 1 );
-        String userId= verification.getUserId();
+    //    Verification verification = verificationDao.getVerificaion( 1 );
+    //    String userId= verification.getUserId();
         HashMap<String,String> map = new HashMap<>(  );
-        map.put( "user_id", userId );
+        map.put( "user_id", "8" );
 
         ApiInterface apiInterface = ApiClient.getRetrofitInstance().create( ApiInterface.class );
         Call<ResponseMessage> call = apiInterface.getMessage( map );
