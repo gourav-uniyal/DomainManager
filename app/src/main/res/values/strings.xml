@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">DomainManager</string>
+
     <string name="action_exports">Export to Excel</string>
+    <string name="action_filters">Add Filters</string>
+
+    <string name="string_select_year">Select Year</string>
+    <string name="string_select_month">Select Month</string>
+    <string name="string_select_date">Select Date</string>
+    <string name="string_select_country">Select Country</string>
+    <string name="string_select_state">Select State</string>
+    <string name="string_select_city">Select City</string>
 </resources>

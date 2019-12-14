@@ -37,4 +37,12 @@
         android:fontFamily="@font/laila"
         android:backgroundTint="@color/colorPrimary" />
 
+    <ProgressBar
+        android:id="@+id/progressBar_verification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:foregroundGravity="center"
+        android:visibility="gone"/>
+
 </LinearLayout>

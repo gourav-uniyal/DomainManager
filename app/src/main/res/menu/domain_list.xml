@@ -5,4 +5,8 @@
         android:id="@+id/action_exports"
         android:title="@string/action_exports"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_filter"
+        android:title="@string/action_filters"
+        app:showAsAction="never" />
 </menu>

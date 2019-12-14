@@ -1,40 +1,76 @@
 package com.android.testmessenger.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
-import com.android.testmessenger.Domain;
 import com.android.testmessenger.R;
-import com.android.testmessenger.adapter.HomeAdapter;
-
+import com.android.testmessenger.interfaces.ApiInterface;
+import com.android.testmessenger.libs.ApiClient;
+import com.android.testmessenger.model.DomainFilter;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jxl.Workbook;
-import jxl.WorkbookSettings;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
+import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
-    @BindView( R.id.rv_main ) RecyclerView recyclerView;
+    //region Variable Declaration
+    @BindView(R.id.spinner_year)
+    MaterialSpinner spinnerYear;
+    @BindView(R.id.spinner_month)
+    MaterialSpinner spinnerMonth;
+    @BindView(R.id.spinner_date)
+    MaterialSpinner spinnerDate;
+    @BindView(R.id.spinner_country)
+    MaterialSpinner spinnerCountry;
+    /*@BindView(R.id.spinner_state)
+    MaterialSpinner spinnerState;
+    @BindView(R.id.spinner_city)
+    MaterialSpinner spinnerCity;*/
 
-    private HomeAdapter homeAdapter;
-    private ArrayList<Domain> arrayList;
-    private static long back_pressed;
+    @BindView(R.id.btn_show_list)
+    Button btnShowList;
+
+    private HashMap<String, String> monthHashMap;
+
+    private ArrayList<String> yearArrayList;
+    private ArrayList<String> monthArrayList;
+    private ArrayList<String> dateArrayList;
+    private ArrayList<String> countryArrayList;
+//    private ArrayList<String> stateArrayList;
+//    private ArrayList<String> cityArrayList;
+
+    private String selectedYear;
+    private String selectedMonth;
+    private String selectedDate;
+    private String selectedCountry;
+    /*private String selectedState = "all";
+    private String selectedCity = "all";*/
+
+    private String filter = "n";
+
     private static String folderPath;
+    private static long back_pressed;
+
+    private static final String TAG = "HomeActivity";
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,103 +79,194 @@ public class HomeActivity extends AppCompatActivity {
 
         ButterKnife.bind( this );
 
-        requestPermission();
+        hideViewItems( );
 
-        arrayList = new ArrayList<>( );
+        requestPermission( );
 
-        Domain domain = new Domain( "Steve Jobs", "http://apple.com", "Dehradun", "Apple", "8126374588", "hey", "hey");
-        arrayList.add( domain );
-        arrayList.add( domain );
+        init( );
 
-        homeAdapter = new HomeAdapter(getApplicationContext(), arrayList);
-        recyclerView.setLayoutManager( new LinearLayoutManager(this, RecyclerView.VERTICAL, false) );
-        recyclerView.setAdapter( homeAdapter );
+        getMonths( );
+
+        getFilterData( );
+
     }
 
-    /**
-     * this function creates the excel file in app folder
-     */
-    void createExcelFile(){
-
-        File file = new File(folderPath, "06-11-19" + getRandomString( 4 ) +".xls");
-        WorkbookSettings wbSettings = new WorkbookSettings();
-        wbSettings.setLocale(new Locale("en", "EN"));
-        try {
-            WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-            createExcelSheet(workbook);
-            workbook.write();
-            workbook.close();
-            Toast.makeText( this, "Exported", Toast.LENGTH_SHORT ).show( );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * this function creates excel sheet.
-     */
-    void createExcelSheet(WritableWorkbook workbook){
-
-        try {
-            WritableSheet sheet = workbook.createSheet("sheet1", 0);
-
-            sheet.addCell( new Label( 0, 0, "Name" ) );
-            sheet.addCell( new Label( 1, 0, "DomainName" ) );
-            sheet.addCell( new Label( 2, 0, "City") );
-            sheet.addCell( new Label( 3, 0, "CompanyName" ) );
-            sheet.addCell( new Label( 4, 0, "PhoneNumber" ) );
-            sheet.addCell( new Label( 5, 0, "Whatsapp Message" ) );
-            sheet.addCell( new Label( 6, 0, "SMS Text" ) );
-
-            for (int i = 0; i < arrayList.size(); i++) {
-                sheet.addCell( new Label( 0, i + 1, arrayList.get(i).getName() ) );
-                sheet.addCell( new Label( 1, i + 1, arrayList.get(i).getDomainName() ) );
-                sheet.addCell( new Label( 2, i + 1, arrayList.get(i).getCity() ) );
-                sheet.addCell( new Label( 3, i + 1, arrayList.get(i).getCompanyName( ) ) );
-                sheet.addCell( new Label( 4, i + 1, arrayList.get(i).getPhoneNumber() ) );
-                sheet.addCell( new Label( 5, i + 1, arrayList.get(i).getWhatsappMessage()) );
-                sheet.addCell( new Label( 6, i + 1, arrayList.get(i).getMessage() ) );
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * this function generate random string of given length
-     * @param n -> length of string
-     * @return string of length n
-     */
-    static String getRandomString(int n)
-    {
-        // chose a Character random from this String
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "abcdefghijklmnopqrstuvxyz";
-
-        // create StringBuffer size of AlphaNumericString
-        StringBuilder sb = new StringBuilder(n);
-
-        for (int i = 0; i < n; i++) {
-            // generate a random number between
-            // 0 to AlphaNumericString variable length
-            int index = (int)(AlphaNumericString.length() * Math.random());
-            // add Character one by one in end of sb
-            sb.append(AlphaNumericString.charAt(index));
-        }
-        return sb.toString();
+    void init() {
+        filter = getIntent( ).getStringExtra( "filter" );
+  /*      stateArrayList = new ArrayList<>( );
+        stateArrayList.add( "all" );
+        cityArrayList = new ArrayList<>( );
+        cityArrayList.add( "all" );*/
     }
 
     /***
      * this function request runtime permissions for app
      */
-    void requestPermission(){
+    void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission_group.CALL_LOG, Manifest.permission.CALL_PHONE,
+            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission_group.CALL_LOG, Manifest.permission.CALL_PHONE,
                     Manifest.permission.READ_PHONE_STATE, Manifest.permission.ANSWER_PHONE_CALLS, Manifest.permission.SEND_SMS}, 1 );
         } else
-            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE,
+            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.CALL_PHONE,
                     Manifest.permission.READ_PHONE_STATE, Manifest.permission.SEND_SMS}, 1 );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText( getApplicationContext( ), "Permission Granted", Toast.LENGTH_SHORT ).show( );
+                createfolder( );
+            } else {
+                Toast.makeText( this, "Please grant the permission", Toast.LENGTH_SHORT ).show( );
+            }
+        }
+    }
+
+    /**
+     * this function calls api to get the filter data
+     */
+    void getFilterData() {
+        ApiInterface apiInterface = ApiClient.getRetrofitInstance( ).create( ApiInterface.class );
+        Call<DomainFilter> call = apiInterface.getFilters( );
+        call.enqueue( new Callback<DomainFilter>( ) {
+            @Override
+            public void onResponse(Call<DomainFilter> call, Response<DomainFilter> response) {
+                DomainFilter domainFilter = response.body( );
+                if (domainFilter != null) {
+                    if (domainFilter.getStatus( ).equals( "success" )) {
+                        HashSet<String> yearHashSet = new HashSet<>( domainFilter.getYearArray( ));
+                        yearArrayList = new ArrayList<>(yearHashSet);
+                        HashSet monthHashSet = new HashSet<>( domainFilter.getMonthArray( ));
+                        monthArrayList = new ArrayList<>(monthHashSet);
+                        HashSet dateHashSet = new HashSet<>( domainFilter.getDateArray());
+                        dateArrayList = new ArrayList<>(dateHashSet);
+                        HashSet countryHashSet = new HashSet<>( domainFilter.getCountryArray( ));
+                        countryArrayList = new ArrayList<>(countryHashSet);
+                        /*stateArrayList.addAll( domainFilter.getStateArray( ) );
+                        cityArrayList.addAll( domainFilter.getCityArray( ) );*/
+                        setSpinner( );
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DomainFilter> call, Throwable t) {
+                Toast.makeText( HomeActivity.this, t.getLocalizedMessage( ), Toast.LENGTH_SHORT ).show( );
+            }
+        } );
+    }
+
+    /**
+     * this function set data to spinners
+     */
+    void setSpinner() {
+        setSpinnerYear( );
+        setSpinnerMonth( );
+        setSpinnerDate( );
+        setSpinnerCountry( );
+    /*  setSpinnerState( );
+        setSpinnerCity( );*/
+    }
+
+    void setSpinnerYear() {
+
+        yearArrayList.remove( null );
+        spinnerYear.setItems(yearArrayList);
+
+        spinnerYear.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedYear = item;
+            spinnerMonth.setVisibility( View.VISIBLE );
+        } );
+    }
+
+    void setSpinnerMonth() {
+        for (String month : monthArrayList) {
+            spinnerMonth.setItems( monthHashMap.get( month ) );
+        }
+
+        spinnerMonth.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedMonth = getMapKey( monthHashMap, item );
+            spinnerDate.setVisibility( View.VISIBLE );
+        } );
+    }
+
+    void setSpinnerDate() {
+        dateArrayList.remove( null );
+        spinnerDate.setItems( dateArrayList );
+        spinnerDate.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedDate = item;
+            spinnerCountry.setVisibility( View.VISIBLE );
+        } );
+    }
+
+    void setSpinnerCountry() {
+        countryArrayList.remove( null );
+        spinnerCountry.setItems( countryArrayList );
+        spinnerCountry.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedCountry = item;
+           /* spinnerState.setVisibility( View.VISIBLE );
+            spinnerCity.setVisibility( View.VISIBLE );*/
+            btnShowList.setVisibility( View.VISIBLE );
+        } );
+    }
+
+  /*  void setSpinnerState() {
+        stateArrayList.remove( null );
+        spinnerState.setItems( stateArrayList );
+        spinnerState.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedState = item;
+        } );
+    }
+
+    void setSpinnerCity() {
+
+        cityArrayList.remove( null );
+        spinnerCity.setItems( cityArrayList );
+        spinnerCity.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            selectedCity = item;
+        } );
+    }*/
+
+    @OnClick(R.id.btn_show_list)
+    void onClickShowList() {
+        if(filter != null) {
+            if (filter.equals( "y" )) {
+                Intent intent = new Intent( );
+                intent.putExtra( "folderPath", folderPath );
+                intent.putExtra( "year", selectedYear );
+                intent.putExtra( "month", selectedMonth );
+                intent.putExtra( "date", selectedDate );
+                intent.putExtra( "country", selectedCountry );
+                /*intent.putExtra( "state", selectedState );
+                intent.putExtra( "city", selectedCity );*/
+                setResult( 2 );
+                finish( );
+            }
+        }
+        else {
+            Intent intent = new Intent( getApplicationContext( ), DomainListActivity.class );
+            intent.putExtra( "folderPath", folderPath );
+            intent.putExtra( "year", selectedYear );
+            intent.putExtra( "month", selectedMonth );
+            intent.putExtra( "date", selectedDate );
+            intent.putExtra( "country", selectedCountry );
+            /*intent.putExtra( "state", selectedState );
+            intent.putExtra( "city", selectedCity );*/
+            startActivity( intent );
+        }
+    }
+
+    /**
+     * this function hides the view on activity start
+     */
+    void hideViewItems() {
+        spinnerMonth.setVisibility( View.GONE );
+        spinnerDate.setVisibility( View.GONE );
+        spinnerCountry.setVisibility( View.GONE );
+      /*  spinnerState.setVisibility( View.GONE );
+        spinnerCity.setVisibility( View.GONE );*/
     }
 
     /***
@@ -155,42 +282,55 @@ public class HomeActivity extends AppCompatActivity {
             folderPath = folder.getAbsolutePath( );
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-                createfolder();
-            }
-            else {
-                Toast.makeText( this, "Please grant the permission", Toast.LENGTH_SHORT ).show( );
-            }
-        }
+    /**
+     * this function have hash map of months with serial number
+     */
+    void getMonths() {
+        monthHashMap = new HashMap<>( );
+        monthHashMap.put( "1", "January" );
+        monthHashMap.put( "2", "Febrary" );
+        monthHashMap.put( "3", "March" );
+        monthHashMap.put( "4", "April" );
+        monthHashMap.put( "5", "May" );
+        monthHashMap.put( "6", "June" );
+        monthHashMap.put( "7", "July" );
+        monthHashMap.put( "8", "August" );
+        monthHashMap.put( "9", "September" );
+        monthHashMap.put( "10", "October" );
+        monthHashMap.put( "11", "November" );
+        monthHashMap.put( "12", "December" );
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_exports) {
-            createExcelFile();
-            return true;
+    /**
+     * this function return key of hashmap having @param value
+     *
+     * @param map
+     * @param value
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    <K, V> K getMapKey(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet( )) {
+            if (entry.getValue( ).equals( value )) {
+                return entry.getKey( );
+            }
         }
-        return super.onOptionsItemSelected(item);
+        return null;
     }
 
     @Override
     public void onBackPressed() {
-        if (back_pressed + 1500 > System.currentTimeMillis())
-            super.onBackPressed();
-        else
-            Toast.makeText(getBaseContext(), "Tap again to exit!", Toast.LENGTH_SHORT).show();
-        back_pressed = System.currentTimeMillis();
+        if(filter != null) {
+            if (filter.equals( "y" ))
+                finish( );
+        }
+        else {
+            if (back_pressed + 1500 > System.currentTimeMillis( ))
+                super.onBackPressed( );
+            else
+                Toast.makeText( getBaseContext( ), "Tap again to exit!", Toast.LENGTH_SHORT ).show( );
+            back_pressed = System.currentTimeMillis( );
+        }
     }
 }
