@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical">
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_year" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_month"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_month" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_date" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_country" />
+
+         <!--   <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_state" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/laila"
+                app:ms_background_color="@color/colorWhite"
+                app:ms_arrow_tint="@color/colorGrey"
+                app:ms_text_color="@color/colorBlack"
+                app:ms_hint_color="@color/colorGrey"
+                app:ms_hint="@string/string_select_city" />
+-->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/btn_show_list"
+                android:fontFamily="@font/laila"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="Show List" />
+
+        </LinearLayout>
+
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar_home"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
