@@ -152,11 +152,11 @@ public class VerificationActivity extends AppCompatActivity {
                     }
                     Log.v( TAG, "FINAL RESPONSE: " + responseVerification.getStatus( ) );
                     Log.v( TAG, "status on response: " + responseVerification.getStatus( ) );
-                }
+                }/*
                 else {
                     Toast.makeText( getApplicationContext( ), "No response try again", Toast.LENGTH_SHORT ).show( );
                     progressBar.setVisibility( View.GONE );
-                }
+                }*/
             }
             @Override
             public void onFailure(@NonNull Call<ResponseVerification> call, @NonNull Throwable t) {

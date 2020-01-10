@@ -1,7 +1,9 @@
 package com.android.testmessenger.model;
 
+import androidx.room.Entity;
 import com.google.gson.annotations.SerializedName;
 
+@Entity
 public class Domain {
 
     @SerializedName( "registrant_name" )
@@ -12,10 +14,19 @@ public class Domain {
     private String registrantNumber;
     @SerializedName( "registrant_country" )
     private String registrantCountry;
+    private boolean isCall=false;
     /*@SerializedName( "city" )
     private String city;
     @SerializedName( "registrant_address" )
     private String companyName;*/
+
+    public boolean isCall() {
+        return isCall;
+    }
+
+    public void setCall(boolean call) {
+        isCall = call;
+    }
 
     public String getRegistrantNumber() {
         return registrantNumber;

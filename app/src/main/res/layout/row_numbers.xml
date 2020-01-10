@@ -23,15 +23,35 @@
             android:background="@drawable/border_right"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/lbl_domain_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/laila"
-                android:text="http://www.apple.com"
-                android:textColor="@color/colorBlack"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/lbl_serial_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginRight="5dp"
+                    android:layout_alignBaseline="@+id/lbl_domain_name"
+                    />
+
+                <TextView
+                    android:id="@+id/lbl_domain_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/laila"
+                    android:text="http://www.apple.com"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp"
+                    android:layout_toRightOf="@+id/lbl_serial_number"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/lbl_name"
@@ -42,16 +62,6 @@
                 android:text="Steve Jobs"
                 android:textColor="@color/colorDimgrey"
                 android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/lbl_country_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/laila"
-                android:text="Apple"
-                android:textColor="@color/colorDimgrey"
-                android:textSize="12sp"
-                android:textStyle="bold" />
 
             <!--<TextView
                 android:id="@+id/lbl_city"
@@ -88,7 +98,7 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@mipmap/calls" />
+                app:srcCompat="@drawable/ic_phone_in_talk_green_24dp" />
 
             <ImageView
                 android:id="@+id/imageView_whatsapp_message"

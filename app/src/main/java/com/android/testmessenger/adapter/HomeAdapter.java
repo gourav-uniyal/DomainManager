@@ -18,7 +18,6 @@ import com.android.testmessenger.interfaces.ApiInterface;
 import com.android.testmessenger.libs.ApiClient;
 import com.android.testmessenger.model.Domain;
 import com.android.testmessenger.R;
-import com.android.testmessenger.model.Message;
 import com.android.testmessenger.model.ResponseMessage;
 import com.android.testmessenger.model.Verification;
 
@@ -56,11 +55,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.lblCountryName.setText( arrayList.get( position ).getRegistrantCountry() );
-        holder.lblDomainName.setText( arrayList.get( position ).getDomainName() );
-        holder.lblName.setText( arrayList.get( position ).getName() );
-        //holder.lblPhoneNumber.setText( arrayList.get( position ).getRegistrantNumber() );
-        holder.imgCall.setOnClickListener( v -> startCall( arrayList.get( position ).getRegistrantNumber() ) );
+        Domain domain = arrayList.get( position );
+        holder.lblDomainName.setText( domain.getDomainName() );
+        holder.lblSerialNumber.setText( position + 1  + "." );
+        holder.lblName.setText( domain.getName() );
+        if(domain.isCall()==true){
+            holder.imgCall.setImageResource( R.drawable.ic_phone_in_talk_green_24dp );
+        }
+        if(domain.isCall()==false){
+            holder.imgCall.setImageResource( R.drawable.ic_phone_in_talk_red_24dp );
+        }
+        holder.imgCall.setOnClickListener( v -> {
+            startCall( domain.getRegistrantNumber(), position );
+        } );
         holder.imgMessaging.setOnClickListener( v -> sendTextMessage( arrayList.get( position ).getRegistrantNumber() ) );
         holder.imgWhatsapp.setOnClickListener( v -> sendWhatsAppMessage( arrayList.get( position ).getRegistrantNumber() ) );
     }
@@ -72,8 +79,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView( R.id.lbl_country_name ) TextView lblCountryName;;
         @BindView( R.id.lbl_domain_name ) TextView lblDomainName;
+        @BindView( R.id.lbl_serial_number ) TextView lblSerialNumber;
         @BindView( R.id.lbl_name ) TextView lblName;
         //@BindView(R.id.lbl_phone_number) TextView lblPhoneNumber;
         @BindView(R.id.imageView_call) ImageView imgCall;
@@ -90,11 +97,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
      * this function make call to the given @param phoneNumber and comes back to the app on back pressed.
      * @param phoneNumber
      */
-    private void startCall(String phoneNumber) {
+    private void startCall(String phoneNumber, int position) {
         Log.d( TAG, "startCall: True" );
         Intent callIntent = new Intent( Intent.ACTION_CALL, Uri.parse( "tel:" + phoneNumber ) );
         callIntent.addFlags( FLAG_ACTIVITY_NEW_TASK );
         context.startActivity( callIntent );
+        arrayList.get( position ).setCall( true );
+        notifyDataSetChanged();
     }
 
     /**
@@ -126,6 +135,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
      */
     private void sendWhatsAppMessage(String phoneNumber) {
         Log.d( TAG, "sendWhatsAppMessage: True" + message );
+        if(message==null)
+            message = "   ";
         try {
             Intent sendIntent = new Intent("android.intent.action.MAIN");
             sendIntent.setAction(Intent.ACTION_VIEW);
@@ -142,10 +153,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private synchronized void getMessage(){
         VerificationDao verificationDao = AppDatabase.getInstance( context ).verificationDao();
-    //    Verification verification = verificationDao.getVerificaion( 1 );
-    //    String userId= verification.getUserId();
+        Verification verification = verificationDao.getVerificaion( 1 );
+        String userId= verification.getUserId();
         HashMap<String,String> map = new HashMap<>(  );
-        map.put( "user_id", "8" );
+        map.put( "user_id", userId );
 
         ApiInterface apiInterface = ApiClient.getRetrofitInstance().create( ApiInterface.class );
         Call<ResponseMessage> call = apiInterface.getMessage( map );
@@ -156,6 +167,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 if(responseMessage!= null){
                     if(responseMessage.getStatus().equals( "success" )){
                         message = responseMessage.getMessage().getMessage();
+                        if(message.equals( "null" ))
+                            message = "null";
                         Log.d( TAG, "onResponse: " + message );
                     }
                 }

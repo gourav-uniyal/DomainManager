@@ -22,7 +22,9 @@ import com.android.testmessenger.adapter.HomeAdapter;
 import com.android.testmessenger.model.Message;
 import com.android.testmessenger.model.ResponseDomain;
 import com.android.testmessenger.model.ResponseDomainList;
+import com.android.testmessenger.model.ResponseFilters;
 import com.android.testmessenger.model.ResponseMessage;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,24 +45,20 @@ import retrofit2.Response;
 
 public class DomainListActivity extends AppCompatActivity {
 
-    @BindView(R.id.rv_domain_list)
-    RecyclerView rvDomainList;
-    @BindView(R.id.progressBar_domain_list)
-    ProgressBar footerProgressBar;
-
+    @BindView(R.id.spinner_country_domain_list) MaterialSpinner spinnerCountry;
+    @BindView(R.id.rv_domain_list) RecyclerView rvDomainList;
+    @BindView(R.id.progressBar_domain_list) ProgressBar progressBar;
+    @BindView( R.id.progressBar_footer_domain_list ) ProgressBar footerProgressBar;
 
     private ArrayList<Domain> arrayList;
+    private ArrayList<String> countryArrayList;
     private HomeAdapter homeAdapter;
 
     private static String folderPath;
-    private String year;
-    private String month;
-    private String date;
-    private String country;
-//    private String state;
-//    private String city;
-
-    private String message = "";
+    private static String year;
+    private static String month;
+    private static String date;
+    private static String country;
 
     private int PAGE_START = 1;
     private int TOTAL_PAGE = 1;
@@ -79,6 +77,8 @@ public class DomainListActivity extends AppCompatActivity {
 
         initRecyclerView( );
 
+        getCountryDetail();
+
         getDomainList( 1 );
     }
 
@@ -91,8 +91,6 @@ public class DomainListActivity extends AppCompatActivity {
         month = getIntent( ).getStringExtra( "month" );
         date = getIntent( ).getStringExtra( "date" );
         country = getIntent( ).getStringExtra( "country" );
-//        state = getIntent().getStringExtra( "state" );
-//        city = getIntent().getStringExtra( "city" );
     }
 
     /**
@@ -101,7 +99,7 @@ public class DomainListActivity extends AppCompatActivity {
     void initRecyclerView() {
 
         arrayList = new ArrayList<>( );
-
+        countryArrayList = new ArrayList<>();
         rvDomainList.setLayoutManager( new LinearLayoutManager( getApplicationContext( ), RecyclerView.VERTICAL, false ) );
         rvDomainList.setNestedScrollingEnabled( false );
         rvDomainList.addOnScrollListener( new RecyclerView.OnScrollListener( ) {
@@ -120,8 +118,6 @@ public class DomainListActivity extends AppCompatActivity {
                     }
             }
         } );
-
-
         homeAdapter = new HomeAdapter( getApplicationContext( ), arrayList );
         rvDomainList.setAdapter( homeAdapter );
     }
@@ -136,8 +132,6 @@ public class DomainListActivity extends AppCompatActivity {
         map.put( "month", month );
         map.put( "date", date );
         map.put( "country", country );
-//        map.put( "state", state);
-//        map.put( "city", city);
 
         ApiInterface apiInterface = ApiClient.getRetrofitInstance( ).create( ApiInterface.class );
         Call<ResponseDomain> call = apiInterface.getDomainList( page, map );
@@ -149,14 +143,59 @@ public class DomainListActivity extends AppCompatActivity {
                 if (responseDomain != null && responseDomain.getStatus( ).equals( "success" )) {
                     TOTAL_PAGE = Integer.parseInt( responseDomain.getResponseDomainList( ).getLastPage( ) );
                     arrayList.addAll( responseDomain.getResponseDomainList( ).getDomainArrayList( ) );
+                    Log.v(TAG, "year" + year + month + date + country);
+                    Log.d( TAG, "api called " + country );
                     homeAdapter.notifyDataSetChanged( );
+                    progressBar.setVisibility( View.GONE );
                     footerProgressBar.setVisibility( View.GONE );
                 }
             }
             @Override
             public void onFailure(Call<ResponseDomain> call, Throwable t) {
                 Toast.makeText( DomainListActivity.this, t.getLocalizedMessage( ), Toast.LENGTH_SHORT ).show( );
+                footerProgressBar.setVisibility( View.GONE );
+                progressBar.setVisibility( View.GONE );
             }
+        } );
+    }
+
+    void getCountryDetail(){
+        HashMap<String, String> map = new HashMap<>( );
+        map.put( "year", year );
+        map.put( "month", month );
+        map.put( "date", date );
+
+        ApiInterface apiInterface = ApiClient.getRetrofitInstance( ).create( ApiInterface.class );
+        Call<ResponseFilters> call = apiInterface.getCountryFilter( map );
+        call.enqueue( new Callback<ResponseFilters>( ) {
+            @Override
+            public void onResponse(Call<ResponseFilters> call, Response<ResponseFilters> response) {
+                ResponseFilters domainFilter = response.body( );
+                if (domainFilter != null) {
+                    if (domainFilter.getStatus( ).equals( "success" )) {
+                        countryArrayList.addAll( (domainFilter.getCountryArrayList( )) );
+                        setSpinnerCountry( );
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseFilters> call, Throwable t) {
+                Toast.makeText( getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT ).show();
+            }
+        } );
+    }
+
+    void setSpinnerCountry() {
+        countryArrayList.remove( null );
+        spinnerCountry.setItems( countryArrayList );
+        spinnerCountry.setSelectedIndex( countryArrayList.indexOf( country ));
+        spinnerCountry.setOnItemSelectedListener( (MaterialSpinner.OnItemSelectedListener<String>) (view, position, id, item) -> {
+            country = item;
+            progressBar.setVisibility( View.VISIBLE );
+            Log.v(TAG, "year" + year + month + date + country);
+            arrayList.clear();
+            homeAdapter.notifyDataSetChanged();
+            getDomainList( 1 );
         } );
     }
 
@@ -267,5 +306,4 @@ public class DomainListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected( item );
     }
-
 }

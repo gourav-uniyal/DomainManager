@@ -78,7 +78,13 @@ public class SplashActivity extends AppCompatActivity {
                         verificationDao.delete( verification );
                         startActivity( new Intent( getApplicationContext( ), VerificationActivity.class ) );
                         finish( );
+                    } else if(responseVerification.getStatus().equals( "fail" )){
+                        Toast.makeText( SplashActivity.this, "Verification failed", Toast.LENGTH_SHORT ).show( );
+                        verificationDao.delete( verification );
+                        startActivity( new Intent( getApplicationContext( ), VerificationActivity.class ) );
+                        finish( );
                     }
+
                 }
                 else
                     Toast.makeText( SplashActivity.this, "No response found", Toast.LENGTH_SHORT ).show( );
@@ -87,7 +93,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ResponseVerification> call, Throwable t) {
                 Log.v( TAG, "No response: " + t.getLocalizedMessage( ) );
-                Toast.makeText( getApplicationContext(), "No Response Found!!! Try Again", Toast.LENGTH_SHORT ).show();
+                Toast.makeText( getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT ).show();
             }
         } );
     }

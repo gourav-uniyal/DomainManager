@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "http://dailydomain.arasko.com/api/v1/";
+    private static final String BASE_URL = "https://dailydomain.arasko.com/api/v1/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {

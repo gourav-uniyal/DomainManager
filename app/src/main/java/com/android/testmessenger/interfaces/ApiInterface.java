@@ -1,7 +1,7 @@
 package com.android.testmessenger.interfaces;
 
-import com.android.testmessenger.model.DomainFilter;
 import com.android.testmessenger.model.ResponseDomain;
+import com.android.testmessenger.model.ResponseFilters;
 import com.android.testmessenger.model.ResponseMessage;
 import com.android.testmessenger.model.ResponseVerification;
 import java.util.HashMap;
@@ -13,8 +13,17 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("filter")
-    Call<DomainFilter> getFilters();
+    @GET("filter/year")
+    Call<ResponseFilters> getYearFilter();
+
+    @POST("filter/month")
+    Call<ResponseFilters> getMonthFilter(@Body HashMap hashMap);
+
+    @POST("filter/date")
+    Call<ResponseFilters> getDateFilter(@Body HashMap hashMap);
+
+    @POST("filter/country")
+    Call<ResponseFilters> getCountryFilter(@Body HashMap hashMap);
 
     @POST("domains")
     Call<ResponseDomain> getDomainList(@Query( "page" ) int page, @Body HashMap hashMap);
